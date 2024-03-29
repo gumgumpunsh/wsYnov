@@ -7,5 +7,5 @@ Groupe : Alexandre Piron, Jeremy Bilger, Nathan Piraux
 
 - ws_enteries: id, id-mask, enteries-json
 
-node.js + express (react)
+node.js + express | MySQL
 Aiven.io = wsynov-34
