@@ -1,61 +1,120 @@
 # wsYnov
 
-Groupe : Alexandre Piron, Jeremy Bilger, Nathan Piraux, Evan Lefevre
+Groupe : *Alexandre Piron*, *Jeremy Bilger*, *Nathan Piraux*, *Evan Lefevre*
 
-Conditions préalables
-Compte Git
-Compte Github ou Gitlab
-Compte Aiven
-Node.js installé
-Étapes
+## Étapes
 
-Créer un référentiel Github:
+### Aiven et BDD:
+- Créer un compte Aiven et configurer les bases de données :
+  - PostGreSQL
+  - MongoDB
+  - MySQL
 
-Créez un nouveau référentiel nommé ynov_ws sur la plateforme choisie.
-Créer un compte Aiven et configurer les bases de données :
+### Connexion BDD
+Nous avons utilisés les informations de connexion fournis par Aiven pour nous connecter à la BDD.
+Nous avons séparé l'initialisation et la connexion en deux fichiers distincts : 
+- ws_dbinit_[BDD]
+- ws_connect_[BDD]
 
-Inscrivez-vous à un compte Aiven si vous n'en avez pas déjà un.
-Créez des instances pour les bases de données souhaitées (PostgreSQL, MongoDB, Elasticsearch ou OpenSearch) en utilisant les liens fournis.
-Prenez note des détails de connexion pour chaque base de données.
-Cloner le référentiel :
+### Initialiser les tables
+Dans le fichier `ws_dbinit_[BDD]`, nous avions besoin de créer plusieurs tables / collections, prenons l'exemple de MongoDB :
+- ws_masks (id, name, description, mask_json)
+```js
+// Create the ws_masks collection
+        try {
+            if (collections.find(col => col.name === 'ws_masks')) {
+                console.log("Collection ws_masks already exists !");
+            } else {
+                // Specify the collection
+                await database.createCollection('ws_masks');
+                console.log("Created the ws_masks table");
+            }
+        } catch (err) {
+            console.log("Error when creating table -ws_masks- : ", err);
+        }
+```
+- ws_entries (id, id_mask, entry_json)
+```js
+// Create the ws_entries collection
+        try {
+            if (collections.find(col => col.name === 'ws_entries')) {
+                console.log("Collection ws_entries already exists !");
+            } else {
+                // Specify the collection
+                await database.createCollection('ws_entries');
+                console.log("Created the ws_entries table");
+            }
+        }  catch (err) {
+            console.log("Error when creating table -ws_entries- : ", err);
+        }
+```
 
-Clonez le référentiel ynov_ws sur votre machine locale.
-Se connecter aux bases de données :
+### Effectuer des opérations CRUD :
 
-Utilisez les scripts fournis (node ws_connect_pg.js, node ws_connect_mongodb.js, node ws_connect_elastic.js, node ws_connect_opensearch.js) pour vous connecter aux bases de données respectives en utilisant les détails de connexion obtenus d'Aiven.
-Initialiser les tables :
+Les opérations CruD se décomposent en 4 requêtes différentes :
+- CREATE
+- READ
+- UPDATE
+- DELETE
 
-Utilisez les scripts fournis (node ws_dbinit_pg.js, node ws_dbinit_mongodb.js, node ws_dbinit_elastic.js, node ws_dbinit_opensearch.js) pour créer les tables requises dans chaque base de données.
-Assurez-vous que les tables ont la structure suivante :
-ws_masks (id, name, description, mask_json)
-ws_entries (id, id_mask, entry_json)
-Effectuer des opérations CRUD :
+Prenons l'exemple de MongoDB :
+- Create
+````js
+async function insertDocument(collectionName, document) {
+    const database = await connectToMongoDB();
+    const collection = database.collection(collectionName);
+    
+    try {
+        const result = await collection.insertOne(document);
+        console.log(`${result.insertedCount} document inserted into ${collectionName}`);
+        return result.insertedId;
+    } catch (err) {
+        console.error("Error inserting document : " + document, err);
+    }
+}
+````
+- Read
+````js
+async function findDocuments(collectionName, query = {}) {
+    const database = await connectToMongoDB();
+    const collection = database.collection(collectionName);
+    
+    try {
+        const documents = await collection.find(query).toArray();
+        console.log(`Found ${documents.length} documents in ${collectionName}`);
+        return documents;
+    } catch (err) {
+        console.error('Error finding document : ', err)
+    }
+}
+````
+- Update
+````js
+async function updateDocument(collectionName, filter, update) {
+    const database = await connectToMongoDB();
+    const collection = database.collection(collectionName);
 
-Utilisez les scripts fournis (node ws_crud_pg.js, node ws_crud_mongodb.js, node ws_crud_elastic.js, node ws_crud_opensearch.js) pour effectuer des opérations CRUD (Create, Read, Update, Delete) sur les données des tables.
-Implémentez des fonctions pour chaque opération CRUD pour chaque base de données.
-Facultatif : Utiliser un ORM (Object Relational Mapper) :
+    try {
+        const result = await collection.updateOne(filter, { $set: update });
+        console.log(`${result.modifiedCount} document updated in ${collectionName}`);
+        return result.modifiedCount;
+    } catch (err) {
+        console.error("Error updating document:", err);
+    }
+}
+````
+- Delete 
+````js
+async function deleteDocument(collectionName, filter) {
+    const database = await connectToMongoDB();
+    const collection = database.collection(collectionName);
 
-Choisissez une bibliothèque ORM (par exemple, Sequelize, TypeORM, Mongoose) pour la base de données souhaitée.
-Installez la bibliothèque ORM choisie et intégrez-la à votre application Node.js.
-Utilisez l'ORM pour simplifier les interactions avec la base de données et modéliser les relations entre les données.
-Facultatif : Dockerisation :
-
-Créez un Dockerfile à des fins de développement.
-Utilisez Docker Compose pour créer des services pour chaque base de données et l'application Node.js.
-Cela permettra un processus de développement et de déploiement plus rationalisé.
-Documentation :
-
-Mettez à jour le fichier README avec des instructions détaillées pour chaque étape.
-Incluez des captures d'écran ou des diagrammes pour améliorer la clarté.
-Tests :
-
-Implémentez des tests unitaires pour l'application Node.js afin de garantir la qualité et la fonctionnalité du code.
-Envisagez d'utiliser un framework de test comme Mocha ou Jest.
-Déploiement (facultatif) :
-Si vous utilisez Docker, déployez l'application conteneurisée sur une plateforme cloud comme Heroku ou Amazon Elastic Container Service (ECS).
-Sinon, déployez l'application Node.js sur un serveur ou une plateforme d'hébergement.
-Remarques supplémentaires
-Les scripts fournis sont des exemples et peuvent nécessiter des modifications en fonction de vos besoins spécifiques.
-Assurez-vous d'une gestion correcte des erreurs et de la journalisation tout au long de l'application.
-Suivez les meilleures pratiques pour la lisibilité et la maintenabilité du code.
-Utilisez le contrôle de version (Git) pour suivre les modifications et collaborer efficacement.
+    try {
+        const result = await collection.deleteOne(filter);
+        console.log(`${result.deletedCount} document deleted from ${collectionName}`);
+        return result.deletedCount;
+    } catch (error) {
+        console.error("Error deleting document:", error);
+    }
+}
+````
