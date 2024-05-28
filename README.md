@@ -1,6 +1,6 @@
 # wsYnov
 
-Groupe : Alexandre Piron, Jeremy Bilger, Nathan Piraux
+Groupe : Alexandre Piron, Jeremy Bilger, Nathan Piraux,
 
 Tâches à réaliser :
 * Créez un compte/repository sur la plateforme Github ou Gitlab   [ynov_ws]
