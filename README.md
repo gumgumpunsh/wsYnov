@@ -3,8 +3,12 @@
 Groupe : *Alexandre Piron*, *Jeremy Bilger*, *Nathan Piraux*, *Evan Lefevre*
 
 ## Étapes
+- [Aiven et BDD](#Aiven-et-BDD)
+- [Connexion BDD](#Connexion-BDD)
+- [Initialiser les tables](#Initialiser-les-tables)
+- [Effectuer des opérations CRUD](#Effectuer-des-opérations-CRUD)
 
-### Aiven et BDD:
+### Aiven et BDD
 - Créer un compte Aiven et configurer les bases de données :
   - PostGreSQL
   - MongoDB
@@ -49,7 +53,7 @@ Dans le fichier `ws_dbinit_[BDD]`, nous avions besoin de créer plusieurs tables
         }
 ```
 
-### Effectuer des opérations CRUD :
+### Effectuer des opérations CRUD
 
 Les opérations CruD se décomposent en 4 requêtes différentes :
 - CREATE
