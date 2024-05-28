@@ -1,6 +1,6 @@
 # wsYnov
 
-Groupe : Alexandre Piron, Jeremy Bilger, Nathan Piraux,
+Groupe : Alexandre Piron, Jeremy Bilger, Nathan Piraux, Evan Lefevre
 
 Conditions préalables
 Compte Git
