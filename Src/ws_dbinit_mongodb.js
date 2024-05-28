@@ -7,26 +7,36 @@ async function createDatabaseAndCollection() {
 
         // Specify the database
         const database = client.db('testWebServices');
+        //console.log(client.db('testWebServices'));
         console.log("Connected to the database -testWebServices-");
 
+        const collections = await database.listCollections().toArray();
+
+        // Create the ws_masks collection
         try {
-            // Specify the collection
-            const ws_masks = database.collection('ws_masks');
-            console.log("Created the ws_masks table");
+            if (collections.find(col => col.name === 'ws_masks')) {
+                console.log("Collection ws_masks already exists !");
+            } else {
+                // Specify the collection
+                await database.createCollection('ws_masks');
+                console.log("Created the ws_masks table");
+            }
         } catch (err) {
             console.log("Error when creating table -ws_masks- : ", err);
         }
 
+        // Create the ws_entries collection
         try {
-            const ws_entries = database.collection('ws_entries');
-            console.log("Created the ws_entries table");
+            if (collections.find(col => col.name === 'ws_entries')) {
+                console.log("Collection ws_entries already exists !");
+            } else {
+                // Specify the collection
+                await database.createCollection('ws_entries');
+                console.log("Created the ws_entries table");
+            }
         }  catch (err) {
             console.log("Error when creating table -ws_entries- : ", err);
         }
-
-        //console.log(`${ws_masks.insertedCount} documents inserted in ws_masks`);
-
-        //console.log(`${ws_entries.insertedCount} documents inserted in ws_entries`);
 
     } catch (err) {
         console.log('Error : ' + err);
