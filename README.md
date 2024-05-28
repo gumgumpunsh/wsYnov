@@ -20,6 +20,22 @@ Nous avons séparé l'initialisation et la connexion en deux fichiers distincts 
 - ws_dbinit_[BDD]
 - ws_connect_[BDD]
 
+### Connexion à la BDD
+Dans le fichier `ws_connect_[BDD]`, nous avons déccris le processus de connexion à la base de donnée,
+ici mongoDB comme exemple :
+````js
+async function connectToMongoDB() {
+    try {
+        // Connect to the mongoDB cluster
+        await client.connect();
+        console.log("Connected to the cluster");
+        return client;
+    } catch (err) {
+        console.log("Error connecting to mongoDB cluster", err)
+    }
+}
+````
+
 ### Initialiser les tables
 Dans le fichier `ws_dbinit_[BDD]`, nous avions besoin de créer plusieurs tables / collections, prenons l'exemple de MongoDB :
 - ws_masks (id, name, description, mask_json)
